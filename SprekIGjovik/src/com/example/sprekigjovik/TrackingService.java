@@ -21,7 +21,6 @@ public class TrackingService extends Service {
 	public static final int MSG_START_TRACKING = 3;
 	public static final int MSG_STOP_TRACKING = 4;
 	public static final int MSG_LOCATION_UPDATE = 5;
-	public static final int MSG_ROUTE_UPDATE = 6;
 	
 	private List<TrackingService.Client> mClients = new ArrayList<TrackingService.Client>();
 	private final Messenger mMessenger = new Messenger(new IncomingHandler(this));
@@ -79,23 +78,22 @@ public class TrackingService extends Service {
         
         // Let connected clients know that location is updated
         Message locUpdateMsg = Message.obtain(null, TrackingService.MSG_LOCATION_UPDATE);
-        locUpdateMsg.obj = loc;
-        this.broadcastToClients(locUpdateMsg);
         
         // If we are actively tracking route, add latest point to list.
         if (this.mActiveTracking) {
         	this.mRoute.addPoint(new LatLng(loc.getLatitude(), loc.getLongitude()));
-            Message updateRouteMsg = Message.obtain(null, TrackingService.MSG_ROUTE_UPDATE);
-            updateRouteMsg.obj = this.mRoute;
-            this.broadcastToClients(updateRouteMsg);
+            locUpdateMsg.obj = this.mRoute;
         }
+        
+        // Send the message
+        this.broadcastToClients(locUpdateMsg);
 	}
 	
 	private void broadcastToClients(Message msg) {
 		for (int i = this.mClients.size()-1; i >= 0; i--) {
             try {
             	this.mClients.get(i).getMessenger().send(msg);
-            } catch (RemoteException e) {
+            } catch (RemoteException e) { // It's not throwing RemoteExceptions like it should. Revise!
                 // The client is dead.  Remove it from the list;
                 // we are going through the list from back to front
                 // so this is safe to do inside the loop.
@@ -104,6 +102,7 @@ public class TrackingService extends Service {
         }
 	}
 	
+	@SuppressWarnings("unchecked")
     @SuppressLint("NewApi")
 	static class IncomingHandler extends Handler {
     	private TrackingService mService;
@@ -111,61 +110,78 @@ public class TrackingService extends Service {
     		super();
     		this.mService = service;
     	}
-        @SuppressWarnings("unchecked")
+        
 		@Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
+        public void handleMessage(Message input) {
+            switch (input.what) {
                 case TrackingService.MSG_REGISTER_CLIENT:
-                	Client client = this.mService.new Client(msg.replyTo, (List<PoleMarker>)msg.obj);
-                    // Ooo, new client. Let the client know whether or not we're tracking
-                    Message trackingStatusMsg = Message.obtain(null, 
-                    	this.mService.mActiveTracking ? TrackingService.MSG_START_TRACKING : TrackingService.MSG_STOP_TRACKING
-                    );
-                    // Should send along the route object too.
-                    trackingStatusMsg.obj = this.mService.mRoute;
-                    try {
-                    	client.getMessenger().send(trackingStatusMsg);
-                    	this.mService.mClients.add(client);
-                    } catch (RemoteException e) {
-                    	// Client isn't added to list unless above message went well, so no need to do anything further
-                    }
+                	{
+	                	Client client = this.mService.new Client(input.replyTo, (List<PoleMarker>)input.obj);
+	                    // Ooo, new client. Let the client know whether or not we're tracking
+	                    Message output = Message.obtain(null, 
+	                    	this.mService.mActiveTracking ? TrackingService.MSG_START_TRACKING : TrackingService.MSG_STOP_TRACKING
+	                    );
+	                    // Should send along the route object too.
+	                    output.obj = this.mService.mRoute;
+	                    try {
+	                    	client.getMessenger().send(output);
+	                    	this.mService.mClients.add(client);
+	                    } catch (RemoteException e) {
+	                    	// Client isn't added to list unless above message went well, so no need to do anything further
+	                    }
+                	}
                     break;
                 case TrackingService.MSG_UNREGISTER_CLIENT:
-                    this.mService.mClients.remove(msg.replyTo);
+                    // Find client
+                	{
+	                	for (Client client : this.mService.mClients) {
+	                		if (client.getMessenger().equals(input.replyTo)) {
+	                			// Terminate client
+	                			this.mService.mClients.remove(client);
+	                			break;
+	                		}
+	                	}
+                	}
                     break;
                 case TrackingService.MSG_START_TRACKING:
-                	// Mark as actively tracking
-                	this.mService.mActiveTracking = true;
-            		// Notification
-            		Notification notification = new Notification.Builder(this.mService.getApplicationContext())
-            		.setContentTitle(this.mService.getResources().getString(R.string.notification_title))
-            		.setContentText(this.mService.getResources().getString(R.string.notification_subtitle))
-            		.setSmallIcon(R.drawable.ic_launcher)
-            		.build();
-            		
-            		// Put service into foreground
-            		this.mService.startForeground(8123, notification);
-            		
-            		// Let the clients know that we've started tracking
-                    Message trackingOnMsg = Message.obtain(null, TrackingService.MSG_START_TRACKING);
-                    // Should send along the route object too.
-                    trackingOnMsg.obj = this.mService.mRoute;
-                    this.mService.broadcastToClients(trackingOnMsg);
+                	{
+	                	// Mark as actively tracking
+	                	this.mService.mActiveTracking = true;
+	                	
+	            		// Let the clients know that we've started tracking
+	                    Message output = Message.obtain(null, TrackingService.MSG_START_TRACKING);
+	                    // Should send along the route object too.
+	                    output.obj = this.mService.mRoute;
+	                    this.mService.broadcastToClients(output);
+	                	
+	            		// Notification
+	            		Notification notification = new Notification.Builder(this.mService.getApplicationContext())
+	            		.setContentTitle(this.mService.getResources().getString(R.string.notification_title))
+	            		.setContentText(this.mService.getResources().getString(R.string.notification_subtitle))
+	            		.setSmallIcon(R.drawable.ic_launcher)
+	            		.build();
+	            		
+	            		// Put service into foreground
+	            		this.mService.startForeground(8123, notification);
+                	}
                     break;
                 case TrackingService.MSG_STOP_TRACKING:
-                	// Mark as no longer tracking
-                	this.mService.mActiveTracking = false;
-                	// Remove from foreground
-                	this.mService.stopForeground(true);
-                	
-            		// Let the clients know that we've stopped tracking
-                    Message trackingOffMsg = Message.obtain(null, TrackingService.MSG_START_TRACKING);
-                    // Should send along the route object too.
-                    trackingOffMsg.obj = this.mService.mRoute;
-                    this.mService.broadcastToClients(trackingOffMsg);
+                	{
+	                	// Mark as no longer tracking
+	                	this.mService.mActiveTracking = false;
+	                	
+	            		// Let the clients know that we've stopped tracking
+	                    Message output = Message.obtain(null, TrackingService.MSG_STOP_TRACKING);
+	                    // Should send along the route object too.
+	                    output.obj = this.mService.mRoute;
+	                    this.mService.broadcastToClients(output);
+	                    
+	                	// Remove from foreground
+	                	this.mService.stopForeground(true);
+                	}
                 	break;
                 default:
-                    super.handleMessage(msg);
+                    super.handleMessage(input);
             }
         }
     }

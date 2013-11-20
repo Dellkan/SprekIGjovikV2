@@ -30,13 +30,13 @@ public class LocationTracker implements LocationListener {
 		locCriterias.setAccuracy(Criteria.ACCURACY_FINE);
 		
 		// Request regular updates
-		this.lm.requestLocationUpdates(500, 10, locCriterias, this, null);
+		this.lm.requestLocationUpdates(100, 0, locCriterias, this, null);
 	}
 	
     @Override
     public void onLocationChanged(Location loc) {
         this.curLoc = loc;
-        Toast.makeText(this.mService.getApplicationContext(), "Loc update! Acc: " + Float.toString(loc.getAccuracy()), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.mService, "Loc update! Acc: " + Float.toString(loc.getAccuracy()), Toast.LENGTH_SHORT).show();
         // Send updates somewhere
         if (this.curLoc.getAccuracy() <= 3000) { // Review required accuracy
         	// Run update
