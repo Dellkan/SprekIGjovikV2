@@ -8,9 +8,29 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MapActivity" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+	<fragment
+	  android:id="@+id/map"
+	  android:name="com.google.android.gms.maps.MapFragment"
+	  android:layout_width="match_parent"
+	  android:layout_height="match_parent" />
+
+	<Button
+	    android:id="@+id/map_fetch_poles_button"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignBottom="@+id/map"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginBottom="14dp"
+	    android:text="@string/map_fetch_poles"
+	    android:onClick="fetchPolesFromServer" />
+
+	<Button
+	    android:id="@+id/map_tracking_button"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_above="@+id/map_fetch_poles_button"
+	    android:layout_centerHorizontal="true"
+	    android:text="@string/map_start_tracking"
+	    android:onClick="toggleTracking" />
 
 </RelativeLayout>

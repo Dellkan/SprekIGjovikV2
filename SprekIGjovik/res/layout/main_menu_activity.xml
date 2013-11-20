@@ -14,7 +14,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="@string/menu_title_map" />
+        android:text="@string/menu_title_map"
+        android:onClick="startMapActivity" />
 
     <Button
         android:id="@+id/button2"

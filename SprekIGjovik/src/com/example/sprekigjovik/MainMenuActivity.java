@@ -2,10 +2,11 @@ package com.example.sprekigjovik;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
+import android.view.View;
 
 public class MainMenuActivity extends Activity {
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -18,5 +19,8 @@ public class MainMenuActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-
+	
+	public void startMapActivity(View v) {
+		startActivity(new Intent(v.getContext(), MapActivity.class));
+	}
 }

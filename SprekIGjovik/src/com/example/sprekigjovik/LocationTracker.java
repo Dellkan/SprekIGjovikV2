@@ -6,20 +6,18 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.widget.Toast;
 
-public class CurLocation implements LocationListener {
-	private TrackingService service;
+public class LocationTracker implements LocationListener {
+	private TrackingService mService;
 	private LocationManager lm;
 	private Location curLoc;
 
 	// Constructor
-	CurLocation(TrackingService service) {
-		
+	LocationTracker(TrackingService service) {
+		this.mService = service;
 		// Get location manager
-		this.lm = ((LocationManager)this.service.getApplicationContext().getSystemService(Context.LOCATION_SERVICE));
-		
-		// Use last known location until updates are received
-		this.curLoc = this.lm.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+		this.lm = ((LocationManager)this.mService.getApplicationContext().getSystemService(Context.LOCATION_SERVICE));
 		
 		// If there is no known location, replace null with an empty location
 		if (this.curLoc == null) {
@@ -32,29 +30,40 @@ public class CurLocation implements LocationListener {
 		locCriterias.setAccuracy(Criteria.ACCURACY_FINE);
 		
 		// Request regular updates
-		this.lm.requestLocationUpdates(5, 10, locCriterias, this, null);
+		this.lm.requestLocationUpdates(500, 10, locCriterias, this, null);
 	}
 	
     @Override
     public void onLocationChanged(Location loc) {
         this.curLoc = loc;
+        Toast.makeText(this.mService.getApplicationContext(), "Loc update! Acc: " + Float.toString(loc.getAccuracy()), Toast.LENGTH_SHORT).show();
         // Send updates somewhere
+        if (this.curLoc.getAccuracy() <= 3000) { // Review required accuracy
+        	// Run update
+        	this.mService.runLocationUpdate(this.curLoc);
+        }
     }
 
     @Override
-    public void onProviderDisabled(String provider) {}
+    public void onProviderDisabled(String provider) {
+    	
+    }
 
     @Override
-    public void onProviderEnabled(String provider) {}
+    public void onProviderEnabled(String provider) {
+    	
+    }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {}
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    	
+    }
     
     public Location getLocation() {
     	return this.curLoc;
     }
     
-    public void close() {    	
+    public void close() {
     	// Remove all updates associated with this object
     	this.lm.removeUpdates(this);
     }
