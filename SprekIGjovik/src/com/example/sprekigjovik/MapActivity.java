@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +16,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,16 +29,19 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 
 public class MapActivity extends Activity {
 	// Action stuff
 	private boolean isTracking;
+	private SharedPreferences mPref;
 	
 	// Map stuff
 	private GoogleMap mMap;
 	private static final LatLng GJOVIK = new LatLng(60.795865, 10.687612);
 	private List<PoleMarker> mPoleMarkers = new ArrayList<PoleMarker>();
+	private TileOverlay mCustTile;
 	
 	private void showPoles() {
 		// Remove old PoleMarkers, if any
@@ -54,6 +59,7 @@ public class MapActivity extends Activity {
 				int flagResource = 0;
 				// Find flag resource
 				switch(pole.getDifficulty()) {
+					case Pole.DIFF_UNKNOWN: flagResource = R.drawable.flag_white; break; 
 					case Pole.DIFF_GREEN: flagResource = R.drawable.flag_black; break;
 					case Pole.DIFF_BLUE: flagResource = R.drawable.flag_blue; break;
 					case Pole.DIFF_RED:	flagResource = R.drawable.flag_green; break; 
@@ -72,6 +78,15 @@ public class MapActivity extends Activity {
 				this.mPoleMarkers.add(new PoleMarker(pole, this.mMap.addMarker(options)));
 			}
 		}
+	}
+	
+	private void insertCustTiles() {
+		this.mCustTile = this.mMap.addTileOverlay(new TileOverlayOptions()
+			.tileProvider(
+				new CustomMapTileProvider(getResources().getAssets())
+			)
+			.zIndex(1)
+		);
 	}
 	
 	// Service stuff
@@ -114,10 +129,10 @@ public class MapActivity extends Activity {
 			switch (msg.what){
 				case TrackingService.MSG_LOCATION_UPDATE:
 					// Run pole menu update (service updated their distances, etc)
-					break;
-				case TrackingService.MSG_ROUTE_UPDATE:
-					Route route = (Route)msg.obj;
-					route.exportToMap(act.mMap);
+					if (this.act.isTracking && msg.obj != null) {
+						Route route = (Route)msg.obj;
+						route.exportToMap(act.mMap);						
+					}
 					break;
 				case TrackingService.MSG_START_TRACKING:
 					this.act.isTracking = true;
@@ -125,6 +140,8 @@ public class MapActivity extends Activity {
 					((Button) this.act.findViewById(R.id.map_tracking_button)).setText(
 						this.act.getResources().getString(R.string.map_stop_tracking)
 					);
+					Route routeStart = (Route)msg.obj;
+					routeStart.exportToMap(act.mMap);
 					break;
 				case TrackingService.MSG_STOP_TRACKING:
 					this.act.isTracking = false;
@@ -196,19 +213,25 @@ public class MapActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// Set default preferences values
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+		
+		// Get preferences
+		this.mPref = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		// Layout
 		setContentView(R.layout.map_activity);
+		
 		// Show the Up button in the action bar.
 		setupActionBar();
 		
 		// Setup map
 		this.mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-		//this.mMap.setMyLocationEnabled(false);
-		this.mMap.addTileOverlay(new TileOverlayOptions()
-			.tileProvider(
-				new CustomMapTileProvider(getResources().getAssets())
-			)
-			.zIndex(1)
-		);
+		this.mMap.setMyLocationEnabled(this.mPref.getBoolean("prefMapShowGPSLoc", false));
+		// Load custom tiles, if user wants them
+		if (this.mPref.getBoolean("prefMapUseCustTiles", true)) {
+			this.insertCustTiles();
+		}
 		this.mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(GJOVIK, 13));
 		
 		// Fetch poles
@@ -217,13 +240,32 @@ public class MapActivity extends Activity {
 	
 	@Override
 	protected void onResume() {
+		super.onResume();
 		// Bind to the tracker service
 		bindService(new Intent(this, TrackingService.class), this.mConnection, Context.BIND_AUTO_CREATE);
-		super.onResume();
+		
+		// Update preferences
+		this.mPref = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		// Check if myLocation setting was changed
+		if (this.mMap.isMyLocationEnabled() != this.mPref.getBoolean("prefMapShowGPSLoc", false)) {
+			this.mMap.setMyLocationEnabled(this.mPref.getBoolean("prefMapShowGPSLoc", false));
+		}
+		
+		// Check if custom tiles option was changed
+		if (this.mCustTile != null && !this.mPref.getBoolean("prefMapUseCustTiles", true)) {
+			this.mCustTile.remove();
+		}
+		
+		else if (this.mCustTile == null && this.mPref.getBoolean("prefMapUseCustTiles", true)) {
+			this.insertCustTiles();
+			this.mCustTile = null;
+		}
 	}
 	
 	@Override
 	protected void onPause() {
+		super.onPause();
 		// Let the service know we don't need any more updates
         try {
             Message msg = Message.obtain(null, TrackingService.MSG_UNREGISTER_CLIENT);
@@ -235,7 +277,6 @@ public class MapActivity extends Activity {
 		
 		// Unbind from the tracker service
 		unbindService(this.mConnection);
-		super.onPause();
 	}
 
 	@Override
@@ -266,17 +307,20 @@ public class MapActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			NavUtils.navigateUpFromSameTask(this);
-			return true;
+		int id = item.getItemId();
+		switch (id) {
+			case android.R.id.home:
+				NavUtils.navigateUpFromSameTask(this);
+				return true;
+			case R.id.action_settings:
+				Intent intent = new Intent();
+		        intent.setClass(MapActivity.this, SettingsActivity.class);
+		        startActivityForResult(intent, 0); 
+				return true;
+			case R.id.action_showpolelist:
+				// Pull out the pole list
+				
+				return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}

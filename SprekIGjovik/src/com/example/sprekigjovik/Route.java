@@ -56,7 +56,7 @@ public class Route {
 	
 	public void exportToMap(GoogleMap pMap) {
 		// Only create the route once per map. If it exists, simply modify its points
-		if (this.mMap == null || this.mMap.equals(pMap)) {
+		if (this.mMap == null || !this.mMap.equals(pMap)) {
 			this.mMap = pMap;
 			this.mRoute = pMap.addPolyline(new PolylineOptions()
 				.width(25)

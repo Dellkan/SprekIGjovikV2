@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 public class DownloadXML extends AsyncTask<String, Integer, Void> {
 	Context mContext;
@@ -64,7 +65,8 @@ public class DownloadXML extends AsyncTask<String, Integer, Void> {
     	return (activeNetworkInfo != null && activeNetworkInfo.isConnected());
     }
     
-    protected void onPostExecute() {
+    protected void onPostExecute(Void _void) {
         Pole.createFromXML(this.mContext);
+        Toast.makeText(this.mContext.getApplicationContext(), "Poles updated!", Toast.LENGTH_SHORT).show();
     }
 }

@@ -2,8 +2,16 @@
 
     <item
         android:id="@+id/action_settings"
+        android:icon="@android:drawable/ic_menu_preferences"
         android:orderInCategory="100"
-        android:showAsAction="never"
+        android:showAsAction="always"
         android:title="@string/action_settings"/>
+    
+    <item
+        android:id="@+id/action_showpolelist"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:orderInCategory="102"
+        android:showAsAction="always"
+        android:title="@string/action_showpolelist"/>
 
 </menu>

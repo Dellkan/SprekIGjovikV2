@@ -3,9 +3,12 @@
 
     <!-- Meta -->
     <string name="app_name">Sprek i Gjovik</string>
-    <string name="action_settings">Settings</string>
     <string name="title_activity_map">MapActivity</string>
     <string name="map_fetch_poles">Fetch poles</string>
+    
+    <!-- Map menu -->
+	<string name="action_settings">Settings</string>
+	<string name="action_showpolelist">Show pole list</string>
 
     <!-- Main menu -->
     <string name="menu_title_map">Map</string>
@@ -26,8 +29,15 @@
 
 	<!-- TODO -->
     <!-- Settings -->
+    <string name="pref_map_cat_title">Map settings</string>
     <string name="pref_poles_title">Poles</string>
     <string name="pref_fetch_poles">Fetch poles</string>
     <string name="pref_fetch_poles_summary">Fetch fresh list of poles from server</string>
+    <string name="pref_use_customtiles">Use custom tiles</string>
+    <string name="pref_use_customtiles_summary">Use custom orientation map tiles</string>
+    <string name="pref_show_gps">Show GPS marker</string>
+    <string name="pref_show_gps_summary">Shows a dot on the map indicating current location</string>
+    <string name="pref_show_poledist">Show pole distance</string>
+    <string name="pref_show_poledist_summary">Shows the distance to each pole</string>
 
 </resources>
