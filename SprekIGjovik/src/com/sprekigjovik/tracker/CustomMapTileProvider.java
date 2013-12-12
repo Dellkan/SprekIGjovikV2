@@ -1,4 +1,4 @@
-package com.example.sprekigjovik;
+package com.sprekigjovik.tracker;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

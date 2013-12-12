@@ -1,4 +1,4 @@
-package com.example.sprekigjovik;
+package com.sprekigjovik.tracker;
 
 import com.google.android.gms.maps.model.Marker;
 

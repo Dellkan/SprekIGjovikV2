@@ -1,13 +1,15 @@
-package com.example.sprekigjovik;
+package com.sprekigjovik.tracker;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import android.content.Context;
+import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -23,10 +25,17 @@ public class DownloadXML extends AsyncTask<String, Integer, Void> {
      * @return 
      */
     @Override
-    protected Void doInBackground(String... urls) {        
-    	if(!hasInternet()) {
+    protected Void doInBackground(String... urls) {
+    	// Check if user has internet access
+    	ConnectivityManager cm = (ConnectivityManager) this.mContext.
+    			getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+    	NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
+    	
+    	// Give error if not
+    	if(!(activeNetworkInfo != null && activeNetworkInfo.isConnected())) {
     		// Gief error to user
     		Log.d("sprekigjovik", "No internet for you");
+    		Toast.makeText(this.mContext.getApplicationContext(), "No internet access!", Toast.LENGTH_SHORT).show();
     	}
                 
     	else {
@@ -35,9 +44,7 @@ public class DownloadXML extends AsyncTask<String, Integer, Void> {
     		try {
     			InputStream stream = client.execute(httpGet).getEntity().getContent();
 
-    	    	FileOutputStream output = this.mContext.getApplicationContext().openFileOutput(
-    	    		this.mContext.getResources().getString(R.string.file_path_poles), Context.MODE_PRIVATE
-    	    	);
+    	    	FileOutputStream output = this.mContext.getApplicationContext().openFileOutput("poles.xml", Context.MODE_PRIVATE);
     	    	byte[] buffer = new byte[4096];
     	    	int n;
     	                
@@ -54,19 +61,13 @@ public class DownloadXML extends AsyncTask<String, Integer, Void> {
         }
 		return null;
     }
-        
-    /**
-     * Checks if the user has internet access
-     * @return True of False if the user has access or not, respectively
-     */
-    private boolean hasInternet() {
-    	ConnectivityManager cm = (ConnectivityManager) mContext.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-    	NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
-    	return (activeNetworkInfo != null && activeNetworkInfo.isConnected());
-    }
     
     protected void onPostExecute(Void _void) {
         Pole.createFromXML(this.mContext);
         Toast.makeText(this.mContext.getApplicationContext(), "Poles updated!", Toast.LENGTH_SHORT).show();
+        
+        Editor pref = PreferenceManager.getDefaultSharedPreferences(this.mContext).edit(); 
+        pref.putLong("prefPolesLoaded", System.currentTimeMillis());
+        pref.commit();
     }
 }

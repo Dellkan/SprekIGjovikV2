@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/pole_info_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/polemarker_info_name_prefix"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/pole_info_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/polemarker_info_id_prefix" />
+
+    <TextView
+        android:id="@+id/pole_info_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/polemarker_info_location_prefix" />
+
+    <TextView
+        android:id="@+id/pole_info_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/polemarker_info_distance_prefix" />
+
+    <TextView
+        android:id="@+id/pole_info_eta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/polemarker_info_time_prefix" />
+
+</LinearLayout>

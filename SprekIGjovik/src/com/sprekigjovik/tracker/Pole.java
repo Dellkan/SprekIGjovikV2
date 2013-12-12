@@ -1,7 +1,8 @@
-package com.example.sprekigjovik;
+package com.sprekigjovik.tracker;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -12,7 +13,7 @@ import com.google.android.gms.maps.model.LatLng;
 import android.content.Context;
 import android.location.Location;
 
-public class Pole {
+public class Pole implements Comparable<Pole> {
 	// Const's
 	public static final int DIFF_UNKNOWN = 0;
 	public static final int DIFF_GREEN = 1;
@@ -24,7 +25,8 @@ public class Pole {
 	private String mName;
 	private Location mLocation;
 	private static List<Pole> mPoles;
-	private float distance;
+	private float mDistance;
+	private float mEta;
 	private int mDifficulty;
 	
 	public Pole() {
@@ -43,11 +45,16 @@ public class Pole {
 	}
 	
 	public float getDistance() {
-		return this.distance;
+		return this.mDistance;
+	}
+	
+	public Float getETA() {
+		return this.mEta;
 	}
 	
 	public void calcDistance(Location loc) {
-		this.distance = this.mLocation.distanceTo(loc);
+		this.mDistance = this.mLocation.distanceTo(loc);
+		this.mEta = (this.getDistance() / loc.getSpeed());
 	}
 	
 	public String getName() {	
@@ -86,6 +93,10 @@ public class Pole {
 		else if (pDifficulty.equalsIgnoreCase("Black")) {
 			this.mDifficulty = Pole.DIFF_BLACK;
 		}
+		
+		else {
+			this.mDifficulty = Pole.DIFF_UNKNOWN;
+		}
 	}
 	
 	public int getDifficulty() {
@@ -93,14 +104,13 @@ public class Pole {
 	}
 	
 	/**
-	 * TODO check connection value
 	 * Reads an xml file from a stream and generates a list of Post objects
 	 * @param stream InputStream of an XML file
 	 * @return List of Pole objects
 	 */
 	public static void createFromXML(Context pContext) {
 		try {
-			FileInputStream stream = pContext.openFileInput(pContext.getResources().getString(R.string.file_path_poles));
+			FileInputStream stream = pContext.openFileInput("poles.xml");
 		
 			List<Pole> poles = new ArrayList<Pole>();
 			Pole current = null;
@@ -156,7 +166,8 @@ public class Pole {
 		}
 		
 		catch(Exception e) {
-			e.printStackTrace();
+			// Create empty set
+			Pole.mPoles = new ArrayList<Pole>();
 		}
 	}
 	
@@ -165,5 +176,14 @@ public class Pole {
 			Pole.createFromXML(pContext);
 		}
 		return Pole.mPoles;
+	}
+	
+	public static void sortPoles() {
+		Collections.sort(Pole.mPoles);
+	}
+
+	@Override
+	public int compareTo(Pole another) {
+		return (int) (this.getDistance() - another.getDistance());
 	}
 }

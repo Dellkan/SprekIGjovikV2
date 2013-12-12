@@ -3,6 +3,10 @@
 	<PreferenceCategory 
 		android:title="@string/pref_map_cat_title"
 		android:key="pref_key_storage_settings">
+		<Preference 
+		    android:key="prefMapLoadPoles"
+		    android:summary="@string/pref_fetch_poles_summary"
+		    android:title="@string/pref_fetch_poles" />
 	    <CheckBoxPreference
 	    	android:defaultValue="true"
 			android:key="prefMapUseCustTiles"
@@ -18,5 +22,12 @@
 			android:key="prefMapShowPoleDistance"
 			android:summary="@string/pref_show_poledist_summary"
 			android:title="@string/pref_show_poledist" />
+	</PreferenceCategory>
+	<PreferenceCategory 
+		android:title="@string/pref_route_cat_title">
+		<Preference 
+		    android:key="prefRouteDeleteRoutes"
+		    android:summary="@string/pref_delete_routes_summary"
+		    android:title="@string/pref_delete_routes" />
 	</PreferenceCategory>
 </PreferenceScreen>

@@ -1,12 +1,10 @@
-package com.example.sprekigjovik;
+package com.sprekigjovik.tracker;
 
 import android.content.Context;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.widget.Toast;
 
 public class LocationTracker implements LocationListener {
 	private TrackingService mService;
@@ -25,39 +23,38 @@ public class LocationTracker implements LocationListener {
 			this.curLoc = new Location(LocationManager.PASSIVE_PROVIDER);
 		}
 		
+		/*
 		// Set up criteria
 		Criteria locCriterias = new Criteria();
 		locCriterias.setAccuracy(Criteria.ACCURACY_FINE);
+		locCriterias.setSpeedRequired(true);
+		locCriterias.setSpeedAccuracy(Criteria.ACCURACY_HIGH);
 		
 		// Request regular updates
-		this.lm.requestLocationUpdates(100, 0, locCriterias, this, null);
+		this.lm.requestLocationUpdates(5000, 10, locCriterias, this, null);
+		*/
+		this.lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, this);
 	}
 	
     @Override
     public void onLocationChanged(Location loc) {
         this.curLoc = loc;
-        Toast.makeText(this.mService, "Loc update! Acc: " + Float.toString(loc.getAccuracy()), Toast.LENGTH_SHORT).show();
-        // Send updates somewhere
-        if (this.curLoc.getAccuracy() <= 3000) { // Review required accuracy
-        	// Run update
-        	this.mService.runLocationUpdate(this.curLoc);
-        }
+    	// Run update
+    	this.mService.runLocationUpdate(this.curLoc);
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-    	
+    	this.mService.runGPSStatusUpdate(false);
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-    	
+    	this.mService.runGPSStatusUpdate(true);
     }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-    	
-    }
+    public void onStatusChanged(String provider, int status, Bundle extras) {}
     
     public Location getLocation() {
     	return this.curLoc;

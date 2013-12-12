@@ -1,5 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
+    <item
+        android:id="@+id/action_track"
+        android:icon="@drawable/track"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/action_track"/>
+    
     <item
         android:id="@+id/action_settings"
         android:icon="@android:drawable/ic_menu_preferences"
