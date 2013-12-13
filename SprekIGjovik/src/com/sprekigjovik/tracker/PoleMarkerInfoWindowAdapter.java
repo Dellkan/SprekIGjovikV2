@@ -86,6 +86,9 @@ public class PoleMarkerInfoWindowAdapter implements InfoWindowAdapter {
 		return poleMarkerInfo;
 	}
 
+	/**
+	 * Makes sure default view is used.
+	 */
 	@Override
 	public View getInfoWindow(Marker marker) {
 		// Return null, so default view is used
