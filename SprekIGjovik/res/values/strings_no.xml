@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Meta -->
+    <string name="app_name">Sprek i Gjøvik</string>
+    
+    <!-- Map menu -->
+	<string name="action_settings">Innstillinger</string>
+	<string name="action_showpolelist">Vis stolpeliste</string>
+	<string name="gps_disabled_warning">GPS er slått av.\nTrykk for å slå på</string>
+	<string name="gps_marker">GPS signal indikator</string>
+		
+	<!-- drawer button -->
+	<string name="drawer_open">Åpne ruteliste</string>
+	<string name="drawer_close">Lukk ruteliste</string>
+    
+    <!-- Track -->
+    <string name="action_track">Start sporing</string>
+    <string name="action_tracking">Stop sporing</string>
+    <string name="tracking_in_progress">Sporing foregår</string>
+
+    <!-- Notification -->
+    <string name="notification_title">Sprek i Gjøvik</string>
+    <string name="notification_subtitle">Sporer rute..Klikk for å åpne</string>
+    <string name="notification_ticker">Sporer rute..</string>
+    
+    <!-- Difficulties -->
+    <string name="pole_difficulty_white">Ukjent vanskelighetsgrad</string>
+    <string name="pole_difficulty_green">Lett vanskelighetsgrad</string>
+    <string name="pole_difficulty_blue">Normal vanskelighetsgrad</string>
+    <string name="pole_difficulty_red">Hard vanskelighetsgrad</string>
+    <string name="pole_difficulty_black">Veldig hard vanskelighetsgrad</string>
+    
+    <!-- PoleMarker info window -->
+    <!-- \u0020 equals space. XML thing ignores regular spaces -->
+    <string name="polemarker_info_name_prefix">Navn:\u0020</string>
+    <string name="polemarker_info_id_prefix">ID:\u0020</string>
+    <string name="polemarker_info_location_prefix">Lokalisjon:\u0020</string>
+    <string name="polemarker_info_distance_prefix">Distanse:\u0020</string>
+    <string name="polemarker_info_time_prefix">ETA:\u0020</string>
+
+    <!-- Settings -->
+    <string name="poles_never_updated">Aldri oppdatert</string>
+    <string name="pref_map_cat_title">Kart innstillinger</string>
+    <string name="pref_route_cat_title">Rute innstillinger</string>
+    <string name="pref_poles_title">Stolper</string>
+    <string name="pref_fetch_poles">Hent stolper</string>
+    <string name="pref_fetch_poles_summary">Hent oppdatert liste med stolper fra server\Sist oppdatert:\u0020</string>
+    <string name="pref_use_customtiles">Bruk orienteringskart</string>
+    <string name="pref_use_customtiles_summary">Bruk orienteringskart for å navigere</string>
+    <string name="pref_show_gps">Vis GPS markør</string>
+    <string name="pref_show_gps_summary">Viser en dott på kartet på din lokalisjon</string>
+    <string name="pref_show_poledist">Viser stolpe distanse</string>
+    <string name="pref_show_poledist_summary">Viser distanse til hver stolpe</string>
+    
+    <string name="pref_delete_routes">Slett ruter</string>
+    <string name="pref_delete_routes_summary">Slett alle lagrede ruter</string>
+    <string name="pref_delete_routes_confirm_title">Bekreft</string>
+    <string name="pref_delete_routes_confirm_text">Er du sikker på at du vil slette rutene?</string>
+    
+    <!-- Dialog confirm -->
+    <string name="dialog_confirm">Bekreft</string>
+    <string name="dialog_cancel">Kanseller</string>
+    
+    <!-- Units -->
+    <string name="unit_weeks">w</string>
+    <string name="unit_days">dager</string>
+    <string name="unit_hours">t</string>
+    <string name="unit_minutes">min</string>
+    <string name="unit_seconds">sec</string>
+    <string name="unit_kilometer">km</string>
+    <string name="unit_meter">m</string>
+
+</resources>
+

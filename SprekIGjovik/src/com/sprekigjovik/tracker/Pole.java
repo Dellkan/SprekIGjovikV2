@@ -13,6 +13,11 @@ import com.google.android.gms.maps.model.LatLng;
 import android.content.Context;
 import android.location.Location;
 
+/**
+ * Reads and handles all the pole objects from a XML.
+ * @author Jehans,Martin,John
+ *
+ */
 public class Pole implements Comparable<Pole> {
 	// Const's
 	public static final int DIFF_UNKNOWN = 0;
@@ -36,47 +41,86 @@ public class Pole implements Comparable<Pole> {
 		this.mDifficulty = 0;
 	}
 	
+	/**
+	 * 
+	 * @return id of the pole object
+	 */
 	public int getId() {
 		return this.mId;
 	}
-	
+	/**
+	 * 
+	 * @param newId new ID of the pole object.
+	 */
 	public void setId(int newId) {
 		this.mId = newId;
 	}
-	
+	/**
+	 * 
+	 * @return current distance to this post based on position
+	 */
 	public float getDistance() {
 		return this.mDistance;
 	}
-	
+	/**
+	 * 
+	 * @return Estimated time to arrival
+	 */
 	public Float getETA() {
 		return this.mEta;
 	}
-	
+	/**
+	 * Calculates distance to the pole object based on users location
+	 * @param loc current users location
+	 */
 	public void calcDistance(Location loc) {
 		this.mDistance = this.mLocation.distanceTo(loc);
 		this.mEta = (this.getDistance() / loc.getSpeed());
 	}
-	
+	/**
+	 * 
+	 * @return name of the pole object.
+	 */
 	public String getName() {	
 		return this.mName;
 	}
 	
+	/**
+	 * 
+	 * @param newName of the pole object
+	 */
 	public void setName(String newName) {
 		this.mName = newName;
 	}
 
+	/**
+	 * 
+	 * @return poles location.
+	 */
 	public Location getLocation() {
 		return this.mLocation;
 	}
 	
+	/**
+	 * 
+	 * @param newLocation poles location
+	 */
 	public void setLocation(Location newLocation) {
 		this.mLocation = newLocation;
 	}
 	
+	/**
+	 * 
+	 * @return gets LatLng for pole object.
+	 */
 	public LatLng getLatLng() {
 		return new LatLng(this.mLocation.getLatitude(), this.mLocation.getLongitude());
 	}
 	
+	/**
+	 * 
+	 * @param pDifficulty what difficulty to set for the pole.
+	 */
 	public void setDifficulty(String pDifficulty) {
 		if (pDifficulty.equalsIgnoreCase("Green")) {
 			this.mDifficulty = Pole.DIFF_GREEN;
@@ -99,6 +143,10 @@ public class Pole implements Comparable<Pole> {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return Difficulty of the pole object.
+	 */
 	public int getDifficulty() {
 		return this.mDifficulty;
 	}
@@ -171,6 +219,11 @@ public class Pole implements Comparable<Pole> {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param pContext
+	 * @return list of poles read from the XML file.
+	 */
 	public static List<Pole> getPoles(Context pContext) {
 		if (Pole.mPoles == null) {
 			Pole.createFromXML(pContext);
@@ -178,10 +231,16 @@ public class Pole implements Comparable<Pole> {
 		return Pole.mPoles;
 	}
 	
+	/**
+	 * Sorts list of poles.
+	 */
 	public static void sortPoles() {
 		Collections.sort(Pole.mPoles);
 	}
 
+	/**
+	 * Compares one poles distance to another.
+	 */
 	@Override
 	public int compareTo(Pole another) {
 		return (int) (this.getDistance() - another.getDistance());

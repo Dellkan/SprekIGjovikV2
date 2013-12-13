@@ -9,12 +9,21 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.model.Marker;
 
+/**
+ * Handles showing the information window when a marker is pressed.
+ * @author John, Martin, Jehans
+ *
+ */
 public class PoleMarkerInfoWindowAdapter implements InfoWindowAdapter {
 	private MapActivity mAct;
 	public PoleMarkerInfoWindowAdapter(MapActivity pAct) {
 		this.mAct = pAct;
 	}
 	
+	/**
+	 * Gets information about a chosen marker.
+	 * @param Marker marker chosen marker object from map
+	 */
 	@Override
 	public View getInfoContents(Marker marker) {
 		// Find PoleMarker

@@ -13,7 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-
+/**
+ * ListModel for pole objects.  Used in the slider menu.
+ * @author Jehans, Martin, John
+ *
+ */
 @SuppressLint("SimpleDateFormat")
 public class PoleListModel extends ArrayAdapter<Pole> {
 	private Activity mActivity;
@@ -25,11 +29,19 @@ public class PoleListModel extends ArrayAdapter<Pole> {
 		this.mPoles = pPoles;
 	}
 	
+	/**
+	 * Gets pole object at chosen index.
+	 * @param position index for chosen pole
+	 * @return chosen pole object
+	 */
 	@Override
 	public Pole getItem(int position) {
 		return this.mPoles.get(position);
 	}
 	
+	/**
+	 * Gets what poles to show on the menu.
+	 */
 	@Override
 	public View getView(int position, View view, ViewGroup parent) {
 		Pole pole = this.mPoles.get(position);
@@ -82,10 +94,19 @@ public class PoleListModel extends ArrayAdapter<Pole> {
 		return row;
 	}
 	
+	/**
+	 * 
+	 * @param pole object chosen.
+	 * @return view for the pole object
+	 */
 	public View getView(Pole pole) {
 		return this.mViews.get(pole);
 	}
 	
+	/**
+	 * Gets how many poleobjects there are in the list.
+	 * @return how many poles in the list
+	 */
 	@Override
 	public int getCount() {
 		if (this.mPoles != null) {
