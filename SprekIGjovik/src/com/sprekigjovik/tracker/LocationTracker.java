@@ -5,7 +5,11 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-
+/**
+ * Handles different GPS functions such as locationchanged.
+ * @author Jehans, John, Martin
+ *
+ */
 public class LocationTracker implements LocationListener {
 	private TrackingService mService;
 	private LocationManager lm;
@@ -60,6 +64,9 @@ public class LocationTracker implements LocationListener {
     	return this.curLoc;
     }
     
+    /**
+     * Removes all updates associated with this GPS object.
+     */
     public void close() {
     	// Remove all updates associated with this object
     	this.lm.removeUpdates(this);

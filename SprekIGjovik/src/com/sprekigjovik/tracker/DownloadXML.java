@@ -13,6 +13,12 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * Used for downloading XML off the internet in order to update
+ * postlist.
+ * @author Jehans,John,Martin
+ *
+ */
 public class DownloadXML extends AsyncTask<String, Integer, Void> {
 	Context mContext;
         
@@ -61,7 +67,9 @@ public class DownloadXML extends AsyncTask<String, Integer, Void> {
         }
 		return null;
     }
-    
+    /**
+     * Updates poles when user prompts to.
+     */
     protected void onPostExecute(Void _void) {
         Pole.createFromXML(this.mContext);
         Toast.makeText(this.mContext.getApplicationContext(), "Poles updated!", Toast.LENGTH_SHORT).show();

@@ -40,6 +40,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 
+/**
+ * Main class for the map screen.
+ * @author Jehans, John, Martin
+ *
+ */
 public class MapActivity extends Activity {	
 	// Action stuff
 	private boolean isTracking = false;
@@ -56,6 +61,9 @@ public class MapActivity extends Activity {
 	private TileOverlay mCustTile;
 	private Route mActiveRoute;
 	
+	/**
+	 * Shows poles on the map with different colors.
+	 */
 	private void showPoles() {
 		// Remove old PoleMarkers, if any
 		for (PoleMarker polemarker : this.mPoleMarkers) {
@@ -92,7 +100,9 @@ public class MapActivity extends Activity {
 			}
 		}
 	}
-	
+	/**
+	 * Inserts custom map tiles of the orientation map
+	 */
 	private void insertCustTiles() {
 		this.mCustTile = this.mMap.addTileOverlay(new TileOverlayOptions()
 			.tileProvider(
@@ -107,6 +117,9 @@ public class MapActivity extends Activity {
 	private Messenger mService = null;
 	private final ServiceConnection mConnection = new ServiceConnection() {
 		// When tracking service is connected
+		/**
+		 * Handles the tracking service whenever it is connected.
+		 */
 		public void onServiceConnected(ComponentName className, IBinder binder) {
 			mService = new Messenger(binder);
 			
@@ -123,13 +136,18 @@ public class MapActivity extends Activity {
             }
 		}
 
-		// Tracking service is disconnected
+		/**
+		 * Tracking service is disconnected.
+		 */
 		public void onServiceDisconnected(ComponentName className) {
 			MapActivity.this.mService = null;
 		}
 	};
 
-	// Message handler. All incoming messages from the tracking service will be handled here
+	/** 
+	 * Message handler. All incoming messages from the tracking service will be handled here
+	 *
+	 */
 	static class IncomingHandler extends Handler {
 		private MapActivity mAct;
 		private RouteListModel mRoutelistAdapter; 
@@ -138,6 +156,9 @@ public class MapActivity extends Activity {
 			this.mAct = act;
 		}
 		
+		/**
+		 * Handles different functions and options of the tracking service.
+		 */
 		@Override
 		public void handleMessage(Message msg) {
 			if (this.mRoutelistAdapter == null) {
@@ -200,7 +221,10 @@ public class MapActivity extends Activity {
 			}
 		}
 	}
-	
+	/**
+	 * Starts GPS tracking using a service so <br>
+	 * it can be run while the phone is forexample in the pocket.
+	 */
 	public void startTracking() {
         try {
         	// Make the service persistent, so tracking can continue while cell phone is in pocket
@@ -217,6 +241,9 @@ public class MapActivity extends Activity {
         }
 	}
 	
+	/**
+	 * Stops the service GPS tracking service.<br>
+	 */
 	public void stopTracking() {
         try {
         	// The service doesn't need to be persistent anymore. Stop it.
@@ -233,10 +260,9 @@ public class MapActivity extends Activity {
         }		
 	}
 	
-	/*
-	 *  Button stuff
+	/**
+	 *  Button stuff handling start/stop for gps tracking.
 	 */
-	
 	public void toggleTracking() {
         if (this.isTracking) {
         	this.stopTracking();
@@ -247,10 +273,9 @@ public class MapActivity extends Activity {
         }
 	}
 	
-	/*
+	/**
 	 * Activity Life cycle
 	 */
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -337,6 +362,9 @@ public class MapActivity extends Activity {
 		});
 	}
 	
+	/**
+	 * Handles onReseume and preferences for the user.
+	 */
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -373,6 +401,9 @@ public class MapActivity extends Activity {
 		}
 	}
 	
+	/**
+	 * Handles pausing of the application.
+	 */
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -396,7 +427,7 @@ public class MapActivity extends Activity {
 		super.onDestroy();
 	}
 	
-	/*
+	/**
 	 * Metastuff
 	 */
 	@Override
@@ -417,27 +448,30 @@ public class MapActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-		switch (id) {
-			case android.R.id.home:
-		        this.mDrawerbutton.onOptionsItemSelected(item);
-		        // Update info in route list
-		        ((RouteListModel)((ListView)this.findViewById(R.id.routelist)).getAdapter()).notifyDataSetChanged();
-		        return true;
-			case R.id.action_track:
-				this.toggleTracking();
-				return true;
-			case R.id.action_settings:
-				Intent intent = new Intent();
-		        intent.setClass(MapActivity.this, SettingsActivity.class);
-		        startActivityForResult(intent, 0); 
-				return true;
-			case R.id.action_showpolelist:
-				this.togglePolelist(null);
-				return true;
+		if (id == android.R.id.home) {
+			this.mDrawerbutton.onOptionsItemSelected(item);
+			// Update info in route list
+			((RouteListModel)((ListView)this.findViewById(R.id.routelist)).getAdapter()).notifyDataSetChanged();
+			return true;
+		} else if (id == R.id.action_track) {
+			this.toggleTracking();
+			return true;
+		} else if (id == R.id.action_settings) {
+			Intent intent = new Intent();
+			intent.setClass(MapActivity.this, SettingsActivity.class);
+			startActivityForResult(intent, 0);
+			return true;
+		} else if (id == R.id.action_showpolelist) {
+			this.togglePolelist(null);
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 	
+	/**
+	 * Shows polelist menu.
+	 * @param toggle true/false for toggling polelist menu
+	 */
 	public void togglePolelist(Boolean toggle) {
 		ListView polelist = (ListView) this.findViewById(R.id.polelist);
 		LayoutParams layout = polelist.getLayoutParams();
@@ -461,18 +495,33 @@ public class MapActivity extends Activity {
         pref.commit();
 	}
 	
+	/**
+	 * 
+	 * @return List of poleMarkers
+	 */
 	public List<PoleMarker> getPoleMarkers() {
 		return this.mPoleMarkers;
 	}
-	
+	/**
+	 * 
+	 * @return boolean true/false if application is tracking or not.
+	 */
 	public boolean isTracking() {
 		return this.isTracking;
 	}
 	
+	/**
+	 * 
+	 * @return active tracked route.
+	 */
 	public Route getActiveRoute() {
 		return this.mActiveRoute;
 	}
 	
+	/**
+	 * 
+	 * @return active google map object.
+	 */
 	public GoogleMap getMap() {
 		return this.mMap;
 	}

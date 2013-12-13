@@ -1,7 +1,11 @@
 package com.sprekigjovik.tracker;
 
 import android.content.Context;
-
+/**
+ * Class used to write out distance in a proper format
+ * @author jehans, john, martin
+ *
+ */
 public class FormatDistance {
 	private Integer mMetres;
 	private Context mContext = RouteTrackerApplication.getGlobalContext();

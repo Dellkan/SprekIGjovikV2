@@ -1,7 +1,11 @@
 package com.sprekigjovik.tracker;
 
 import android.content.Context;
-
+/**
+ * Class used to properly format time when writing out.
+ * @author jehans, John, Martin
+ *
+ */
 public class FormatTime {
 	private Integer mSeconds;
 	private Context mContext = RouteTrackerApplication.getGlobalContext();
