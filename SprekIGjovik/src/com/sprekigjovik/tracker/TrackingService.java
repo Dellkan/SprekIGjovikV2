@@ -15,6 +15,12 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 
+/**
+ * Handles thread and service functions when tracking with GPS<br>
+ * when application is paused.
+ * @author Martin, John, Jehans
+ *
+ */
 public class TrackingService extends Service {
 	public static final int MSG_REGISTER_CLIENT = 1;
 	public static final int MSG_UNREGISTER_CLIENT = 2;
@@ -29,16 +35,25 @@ public class TrackingService extends Service {
 	private LocationTracker curLoc;
 	private Route mRoute;
 	
+	/**
+	 * sets flags and id for service.
+	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		return START_STICKY;
 	}
 	
+	/**
+	 * gets binder for this service. 
+	 */
 	@Override
 	public IBinder onBind(Intent arg) {
 		return this.mMessenger.getBinder();
 	}
 	
+	/**
+	 * Starts new tracker on create.
+	 */
 	@SuppressLint("NewApi")
 	@Override
 	public void onCreate() {
@@ -48,12 +63,21 @@ public class TrackingService extends Service {
 		}
 	}
 	
+	/**
+	 * Rebinds thread.
+	 */
     @Override
     public void onRebind(Intent intent) {}
 	
+    /**
+     * Unbinds thread and returns true if successful.
+     */
     @Override
     public boolean onUnbind(Intent intent) { return true; }
     
+    /**
+     * Closes service.
+     */
     @Override
     public void onDestroy() {
     	if (this.curLoc != null) {
@@ -62,6 +86,10 @@ public class TrackingService extends Service {
     	}
     }
 	
+    /**
+     * Handles a storing and handling a new location when tracking with the GPS.
+     * @param loc Location of route to be updated.
+     */
 	public void runLocationUpdate(Location loc) {
         // Update poles, but only if there are alive clients 
         if (this.mClients.size() > 0) {
@@ -95,6 +123,10 @@ public class TrackingService extends Service {
 		this.broadcastToClients(msg);
 	}
 	
+	/**
+	 * 
+	 * @param msg
+	 */
 	private void broadcastToClients(Message msg) {
 		for (int i = this.mClients.size()-1; i >= 0; i--) {
             try {
@@ -108,6 +140,11 @@ public class TrackingService extends Service {
         }
 	}
 	
+	/**
+	 * 
+	 * Helperclass for service functions.
+	 *
+	 */
     @SuppressLint("NewApi")
 	static class IncomingHandler extends Handler {
     	private TrackingService mService;
@@ -116,6 +153,11 @@ public class TrackingService extends Service {
     		this.mService = service;
     	}
         
+    	/**
+    	 * Handles all of the different service functions for when to start tracking,
+    	 * <br> stop tracking, show GPS marker, bind service to thread.
+    	 * <br>Will differate between if the user wants to see current GPS or not.
+    	 */
 		@Override
         public void handleMessage(Message input) {
             switch (input.what) {

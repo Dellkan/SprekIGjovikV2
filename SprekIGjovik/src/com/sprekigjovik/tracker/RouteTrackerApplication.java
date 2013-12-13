@@ -1,5 +1,10 @@
 package com.sprekigjovik.tracker;
 
+/**
+ * Used for united activity in some functions where needed.
+ * @author John, Martin, Jehans
+ *
+ */
 public class RouteTrackerApplication extends android.app.Application {
 	private static RouteTrackerApplication mGlobalContext;
 	

@@ -11,7 +11,16 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
+/**
+ * Functionality behind settings screen.
+ * @author John, Martin, Jehans
+ *
+ */
 public class SettingsFragment extends PreferenceFragment {
+	/**
+	 * Sets up settings menu with buttons and options<br>
+	 * for the settings screen.
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

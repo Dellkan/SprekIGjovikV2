@@ -15,6 +15,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+/**
+ * Class to handle routedata and databases for route.
+ * @author John, Jehans, Martin
+ *
+ */
 public class Route {
 	private long mID = 0;
 	private Long mTimeStampStart;
@@ -28,6 +33,10 @@ public class Route {
 	private static List<Route> mRoutes;
 	private boolean mLoaded = false;
 	
+	/**
+	 * Opens and creates databases if needed.
+	 * @return opened database object.
+	 */
 	private static SQLiteDatabase getDB() {
 		if (Route.mDB == null) {
 			Route.mDB = RouteTrackerApplication.getGlobalContext().openOrCreateDatabase("sprekigjovik.db", Context.MODE_PRIVATE, null);
@@ -52,7 +61,11 @@ public class Route {
 		}
 		return Route.mDB;
 	}
-	
+	/**
+	 * Will get all earlier tracked routes that the user has tracked.
+	 * @param pMap Assigns the map to the route.
+	 * @return Returns a list over all the earlier tracked routes.
+	 */
 	public static List<Route> getRoutes(GoogleMap pMap) {
 		if (pMap != null) {
 			Route.mMap = pMap;
@@ -81,7 +94,9 @@ public class Route {
 		}
 		return Route.mRoutes;
 	}
-	
+	/**
+	 * Makes a new Route object when a new tracking is started.
+	 */
 	public Route() {
 		this.mTimeStampStart = System.currentTimeMillis();
 		this.mTimeStampStop = this.mTimeStampStart;
@@ -101,10 +116,17 @@ public class Route {
 		this.mLoaded = true;
 	}
 	
+	/**
+	 * Sets process-ID of this Route object. Used for service and tracking.
+	 * @param pID Process-ID
+	 */
 	public Route(int pID) {
 		this.mID = pID;
 	}
 	
+	/**
+	 * Gets all the coordinates for a shown route.
+	 */
 	public void loadNodes() {
 		if (this.mID > 0 && !this.mLoaded) {
 		    // Set up route points
@@ -125,6 +147,10 @@ public class Route {
 		}
 	}
 	
+	/**
+	 * Adds a new coordinate to a route.
+	 * @param point Coordinate of a users recent GPS position.
+	 */
 	public void addPoint(Location point) {
 		// Add point
 		this.mPoints.add(new LatLng(point.getLatitude(), point.getLongitude()));
@@ -157,6 +183,9 @@ public class Route {
 		Route.getDB().update("routes", routeValues, "id = " + this.mID, null);
 	}
 	
+	/**
+	 * Stops the GPS tracking of a route, and finishes its enddata for the database.
+	 */
 	public void stop() {
 		if (this.mID != 0) {
 			// If empty, delete
@@ -173,7 +202,10 @@ public class Route {
 			}
 		}
 	}
-	
+	/**
+	 * Shows polylines for a tracked route on the map.
+	 * @param pMap Map which the polylines are to be added to.
+	 */
 	public void exportToMap(GoogleMap pMap) {
 		// Only create the route once per map. If it exists, simply modify its points
 		if (Route.mMap == null || !Route.mMap.equals(pMap)) {
@@ -191,10 +223,18 @@ public class Route {
 		this.mRoute.setPoints(this.mPoints);
 	}
 	
+	/**
+	 * 
+	 * @return Time when the route started.
+	 */
 	public long getStartTimeStamp() {
 		return this.mTimeStampStart;
 	}
 	
+	/**
+	 * 
+	 * @return Time when the route ended.
+	 */
 	public long getStopTimeStamp() {
 		return this.mTimeStampStop;
 	}
@@ -213,24 +253,44 @@ public class Route {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return total distance traveled on the route.
+	 */
 	public float getDistance() {
 		return this.mDistance;
 	}
 
+	/**
+	 * 
+	 * @return ID for this route.
+	 */
 	public long getId() {
 		return this.mID;
 	}
 
+	/**
+	 * Deletes entire route database if the user prompts to.
+	 */
 	public static void deleteAll() {
 		Route.mRoutes.clear();
 		Route.getDB().delete("routes", null, null);
 		Route.getDB().delete("routeNodes", null, null);
 	}
 
+	/**
+	 * 
+	 * @return true/false if this route is selected
+	 */
 	public boolean isSelected() {
 		return this.mIsSelected ;
 	}
 	
+	/**
+	 * Will export the points to the map if it is selected, or remove <br>
+	 * the route from the map if it is already selected.
+	 * @param toggle true/false if it is selected.
+	 */
 	public void setSelected(boolean toggle) {
 		this.mIsSelected = toggle;
 		if (this.mIsSelected) {

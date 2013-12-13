@@ -63,11 +63,12 @@
     <string name="dialog_cancel">Kanseller</string>
     
     <!-- Units -->
+    <string name="unit_since">siden</string>
     <string name="unit_weeks">w</string>
     <string name="unit_days">dager</string>
     <string name="unit_hours">t</string>
     <string name="unit_minutes">min</string>
-    <string name="unit_seconds">sec</string>
+    <string name="unit_seconds">sek</string>
     <string name="unit_kilometer">km</string>
     <string name="unit_meter">m</string>
 

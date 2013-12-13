@@ -2,6 +2,8 @@ package com.sprekigjovik.tracker;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -10,7 +12,12 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
-
+/**
+ * This class is used for when showing routes on the slidingmenu.
+ * All functions are standard ListModel functions, and therefore not Javadocced.
+ * @author Martin, John, Jehans
+ *
+ */
 public class RouteListModel extends BaseAdapter implements OnClickListener {
 	private MapActivity mActivity;
 	public RouteListModel(MapActivity pAct) {
@@ -65,7 +72,7 @@ public class RouteListModel extends BaseAdapter implements OnClickListener {
 		
 		// Set timeago
 		((TextView) row.findViewById(R.id.route_list_item_timeago)).setText(
-			new FormatTime((System.currentTimeMillis() - route.getStartTimeStamp()) / 1000).format() + " ago"
+			new FormatTime((System.currentTimeMillis() - route.getStartTimeStamp()) / 1000).format() + R.string.unit_since
 		);
 		
 		// Set elapsed time and distance
