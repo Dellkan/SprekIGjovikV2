@@ -64,7 +64,7 @@
     <string name="dialog_cancel">Cancel</string>
     
     <!-- Units -->
-    <string name="unit_since">Ago</string>
+    <string name="unit_since">ago</string>
     <string name="unit_weeks">w</string>
     <string name="unit_days">days</string>
     <string name="unit_hours">h</string>

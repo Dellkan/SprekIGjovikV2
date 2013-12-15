@@ -62,7 +62,7 @@ public class FormatTime {
 		}
 		
 		else {
-			formatted = this.mSeconds + " " + this.mContext.getString(R.string.unit_seconds);
+			formatted = this.mSeconds + " " + this.mContext.getString(R.string.unit_seconds ) + " ";
 		}
 		return formatted;
 	}
