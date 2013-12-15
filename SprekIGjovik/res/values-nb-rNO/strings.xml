@@ -40,6 +40,7 @@
     <string name="polemarker_info_time_prefix">ETA:\u0020</string>
 
     <!-- Settings -->
+    <string name="pref_no_internet">Trenger internett for å laste ned stolper</string>
     <string name="poles_never_updated">Aldri oppdatert</string>
     <string name="pref_map_cat_title">Kart innstillinger</string>
     <string name="pref_route_cat_title">Rute innstillinger</string>

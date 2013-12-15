@@ -4,12 +4,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 /**
  * Functionality behind settings screen.
@@ -33,7 +37,15 @@ public class SettingsFragment extends PreferenceFragment {
 		fetch_poles_button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				new DownloadXML(SettingsFragment.this.getActivity()).execute("http://dellkan.nodedevs.net/sprekigjovik.xml");
+				if(isNetworkAvailable())
+				{
+					new DownloadXML(SettingsFragment.this.getActivity()).execute("http://dellkan.nodedevs.net/sprekigjovik.xml");
+				}
+				else 
+				{
+					Toast.makeText(SettingsFragment.this.getActivity().getApplicationContext(), 
+							SettingsFragment.this.getActivity().getString(R.string.pref_no_internet), Toast.LENGTH_SHORT).show();
+				}
 				return true;
 			}
 		});
@@ -74,4 +86,11 @@ public class SettingsFragment extends PreferenceFragment {
 			}
 		});
 	}
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager 
+              = (ConnectivityManager) SettingsFragment.this.getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }

@@ -71,11 +71,14 @@ public class DownloadXML extends AsyncTask<String, Integer, Void> {
      * Updates poles when user prompts to.
      */
     protected void onPostExecute(Void _void) {
-        Pole.createFromXML(this.mContext);
-        Toast.makeText(this.mContext.getApplicationContext(), "Poles updated!", Toast.LENGTH_SHORT).show();
-        
-        Editor pref = PreferenceManager.getDefaultSharedPreferences(this.mContext).edit(); 
-        pref.putLong("prefPolesLoaded", System.currentTimeMillis());
-        pref.commit();
+
+	        Pole.createFromXML(this.mContext);
+	        Toast.makeText(this.mContext.getApplicationContext(), "Poles updated!", Toast.LENGTH_SHORT).show();
+	        
+	        Editor pref = PreferenceManager.getDefaultSharedPreferences(this.mContext).edit(); 
+	        pref.putLong("prefPolesLoaded", System.currentTimeMillis());
+	        pref.commit();
     }
+    
+
 }

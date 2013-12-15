@@ -50,7 +50,7 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDBIZGZd_0Y_FYWQxhMmex80nTPLriqQ2k" />
+            android:value="AIzaSyBhMhNdF_4cKLiFvyugxA9VrrT5zfa-OCU" />
 
         <activity
             android:name="com.sprekigjovik.tracker.SettingsActivity"
