@@ -72,7 +72,7 @@ public class RouteListModel extends BaseAdapter implements OnClickListener {
 		
 		// Set timeago
 		((TextView) row.findViewById(R.id.route_list_item_timeago)).setText(
-			new FormatTime((System.currentTimeMillis() - route.getStartTimeStamp()) / 1000).format() + R.string.unit_since
+			new FormatTime((System.currentTimeMillis() - route.getStartTimeStamp()) / 1000).format() + this.mActivity.getResources().getString(R.string.unit_since)
 		);
 		
 		// Set elapsed time and distance
